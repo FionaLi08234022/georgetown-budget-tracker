@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spending Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Spending by Category</h1>
+
+    <form method="post">
+        <label>Select Month:</label>
+        <select name="month" onchange="this.form.submit()">
+            {% for month in months %}
+                <option value="{{ month }}" {% if month == selected_month %}selected{% endif %}>{{ month }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <canvas id="spendingChart" width="400" height="400"></canvas>
+
+    <script>
+        const categories = {{ data | map(attribute='category') | list | safe }};
+        const amounts = {{ data | map(attribute='amount') | list | safe }};
+
+        const chartData = {
+            labels: categories,
+            datasets: [{
+                label: 'Spending ($)',
+                data: amounts,
+                backgroundColor: 'rgba(0, 70, 140, 0.6)'
+            }]
+        };
+
+        const config = {
+            type: 'bar',
+            data: chartData,
+            options: {
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        };
+
+        new Chart(document.getElementById('spendingChart'), config);
+    </script>
+</body>
+</html>

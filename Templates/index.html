@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Georgetown Budget Tracker</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #cddff5;
+            color: #001f4d;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header img {
+            height: 60px;
+            filter: drop-shadow(1px 1px 2px #777);
+        }
+
+        .summary, table, .actions {
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #333;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+
+        .btn {
+            margin: 10px 5px;
+            padding: 10px 15px;
+            background-color: #7d9fbf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .logout {
+            background-color: #e74c3c;
+        }
+
+        form {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <img src="{{ url_for('static', filename='Georgetown_University_Logotype.svg.png') }}" alt="Georgetown Logo">
+            <h1>Georgetown Budget Tracker</h1>
+        </div>
+        <a href="{{ url_for('logout') }}"><button class="btn logout">Logout</button></a>
+    </div>
+
+    <div class="summary">
+        <p><strong>Total Income:</strong> ${{ income }}</p>
+        <p><strong>Total Spending:</strong> ${{ spending }}</p>
+        <p><strong>Balance:</strong> ${{ balance }}</p>
+    </div>
+
+    <h2>Transactions</h2>
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Subcategory</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.type }}</td>
+            <td>{{ entry.category }}</td>
+            <td>{{ entry.subcategory }}</td>
+            <td>{{ entry.amount }}</td>
+            <td>{{ entry.date }}</td>
+            <td>
+                <form action="{{ url_for('delete_entry', entry_index=loop.index0) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this entry?');">
+                    <button type="submit" class="btn logout" style="padding: 5px 10px;">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="actions">
+        <a href="/add"><button class="btn">Add Entry</button></a>
+        <a href="/visualization"><button class="btn">Visualization</button></a>
+    </div>
+</body>
+</html>
